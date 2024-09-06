@@ -5,17 +5,14 @@ const Nav = () => (
   <nav>
     <ul>
       <li>
-        <Link href='/'>
-          Home
-        </Link>
+        <Link href="/">Home</Link>
       </li>
     </ul>
 
-    <style jsx>{`
+    <style jsx="true">{`
       :global(body) {
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-          Helvetica, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir, Helvetica, sans-serif;
       }
       nav {
         text-align: center;
