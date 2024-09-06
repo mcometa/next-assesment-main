@@ -41,7 +41,7 @@ const Show = ({ show }) => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style jsx="true">{`
         .hero {
           width: 100%;
           color: #333;

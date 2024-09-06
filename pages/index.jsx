@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+
 import Nav from '../components/nav'
 
 const Home = () => {
@@ -10,8 +11,6 @@ const Home = () => {
     loading: false,
   })
 
-  let timer = null
-
   const onChange = (e) => {
     setState((prevState) => ({
       ...prevState,
@@ -19,26 +18,34 @@ const Home = () => {
       loading: true,
       shows: [],
     }))
-
-    console.log('fetching data', e.target.query)
-
-    // debounce
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      fetchData(state.query).then((result) => {
-        setState((prevState) => ({ ...prevState, shows: result.shows, loading: false }))
-      })
-    }, 500)
   }
 
   const fetchData = async (query) => {
     const response = await fetch(`https://api.tvmaze.com/search/shows?q=${query}`)
     const result = await response.json()
 
+    console.log({ result })
+
     return {
       shows: result.slice(0, 4).map((entry) => entry.show),
     }
   }
+
+  // A proper debounce that is dependent on state.query
+  // each time state.query changes, the timeout is reset
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchData(state.query).then((result) => {
+        setState((prevState) => ({
+          ...prevState,
+          shows: result.shows,
+          loading: false,
+        }))
+      })
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [state.query])
 
   return (
     <div>
@@ -58,11 +65,11 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="row gap search-results">
+        <div className="row gap search-results" data-testid="search-results-container">
           {state.shows &&
             state.shows.map((show) => {
               return (
-                <div className="card" key={show.id}>
+                <div className="card" key={show.id} data-testid="search-result">
                   <h3>{show.name}</h3>
                   <div dangerouslySetInnerHTML={{ __html: show.summary }} />
 
@@ -73,7 +80,7 @@ const Home = () => {
               )
             })}
           {!state.loading && state.query && (!state.shows || !state.shows.length) && (
-            <div className="card err">
+            <div className="card err" data-testid="no-shows-found">
               <p>no shows found</p>
             </div>
           )}
