@@ -9,11 +9,11 @@ npm install
 Run the app:
 
 ```bash
-npm start
+npm run start
 ```
 
 Run the tests:
 
 ```bash
-npm test
+npm run test
 ```
